@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// 처음에는 내부적으로 동작하려는 원인을 이해랄려고 깊게 하기 보다는
+// 내부적으로 사용하고 있구나 정도로 가볍게 이해하기
+
 @RestController
 @RequestMapping("/api")
 public class MemoController {
