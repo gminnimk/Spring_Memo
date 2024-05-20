@@ -9,5 +9,4 @@ class MemoApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

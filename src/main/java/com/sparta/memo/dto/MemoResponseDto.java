@@ -10,7 +10,7 @@ public class MemoResponseDto {
     private Long id;
     private String username;
     private String contents;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
 
@@ -18,7 +18,7 @@ public class MemoResponseDto {
         this.id = memo.getId();
         this.username = memo.getUsername();
         this.contents = memo.getContents();
-        this.createAt = memo.getCreatedAt();
+        this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
     }
 }
