@@ -1,103 +1,67 @@
 package com.sparta.memo.service;
 
-import com.sparta.memo.dto.MemoRequestDto;
-import com.sparta.memo.dto.MemoResponseDto;
-import com.sparta.memo.entity.Memo;
-import com.sparta.memo.repository.MemoRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import com.sparta.memo.dto.MemoRequestDto; // MemoRequestDto를 import
+import com.sparta.memo.dto.MemoResponseDto; // MemoResponseDto를 import
+import com.sparta.memo.entity.Memo; // Memo 엔티티를 import
+import com.sparta.memo.repository.MemoRepository; // MemoRepository를 import
+import org.springframework.stereotype.Service; // Spring의 Service 어노테이션을 import
+import org.springframework.transaction.annotation.Transactional; // Spring의 트랜잭션 어노테이션을 import
 
-import java.util.List;
+import java.util.List; // List를 import
 
-
-
-//  Memo 애플리케이션의 Memo 데이터 처리를 담당하는 서비스 클래스입니다.
-
-
-
-@Component // Spring 컨텍스트에서 이 클래스가 빈으로 관리되도록 선언합니다.
+@Service // Spring에게 이 클래스가 Service 역할을 하는 클래스임을 알립니다.
 public class MemoService {
 
-    private final MemoRepository memoRepository; // MemoRepository 객체를 멤버 변수로 선언합니다.
+    private final MemoRepository memoRepository; // MemoRepository 의존성 주입을 위한 멤버 변수
 
-    /**
-     * MemoService의 생성자입니다.
-     *
-     * @param memoRepository MemoRepository 객체, Memo 데이터베이스 접근을 담당합니다.
-     */
-    @Autowired // 생성자 주입을 위한 어노테이션
     public MemoService(MemoRepository memoRepository) {
-        this.memoRepository = memoRepository; // MemoRepository 객체를 생성자에서 주입받아 멤버 변수에 할당합니다.
+        this.memoRepository = memoRepository; // MemoRepository를 주입받아 멤버 변수에 할당
     }
 
-    /**
-     * Memo를 생성하는 메서드입니다.
-     *
-     * @param requestDto Memo를 생성하기 위한 요청 데이터 DTO
-     * @return 생성된 Memo 정보를 포함한 MemoResponseDto
-     */
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
-        // MemoRequestDto를 이용하여 Memo 엔티티 객체를 생성합니다.
-        Memo memo = new Memo(requestDto);
+        // RequestDto -> Entity
+        Memo memo = new Memo(requestDto); // Memo 엔티티 객체를 RequestDto를 이용하여 생성합니다.
 
-        // Memo 엔티티를 MemoRepository를 통해 데이터베이스에 저장합니다.
-        Memo saveMemo = memoRepository.save(memo);
+        // DB 저장
+        Memo saveMemo = memoRepository.save(memo); // Memo 엔티티를 저장하고 저장된 Memo 엔티티를 반환받습니다.
 
-        // 저장된 Memo 엔티티를 MemoResponseDto로 변환하여 반환합니다.
-        MemoResponseDto memoResponseDto = new MemoResponseDto(saveMemo);
-        return memoResponseDto;
+        // Entity -> ResponseDto
+        MemoResponseDto memoResponseDto = new MemoResponseDto(saveMemo); // 저장된 Memo 엔티티를 이용하여 MemoResponseDto 객체를 생성합니다.
+
+        return memoResponseDto; // 생성된 MemoResponseDto 객체를 반환합니다.
     }
 
-    /**
-     * 모든 Memo 목록을 조회하는 메서드입니다.
-     *
-     * @return Memo 목록을 담은 MemoResponseDto 리스트
-     */
     public List<MemoResponseDto> getMemos() {
-        // MemoRepository를 통해 데이터베이스에서 모든 Memo 목록을 조회하여 반환합니다.
-        return memoRepository.findAll();
+        // DB 조회
+        // Memo 엔티티의 모든 데이터를 조회하고, 각 Memo 엔티티를 MemoResponseDto로 변환한 후 리스트로 반환합니다.
+        return memoRepository.findAll().stream().map(MemoResponseDto::new).toList();
     }
 
-    /**
-     * 특정 Memo를 업데이트하는 메서드입니다.
-     *
-     * @param id         업데이트할 Memo의 ID
-     * @param requestDto Memo 업데이트를 위한 요청 데이터 DTO
-     * @return 업데이트된 Memo의 ID
-     * @throws IllegalArgumentException 해당 ID에 해당하는 Memo가 존재하지 않을 경우 예외를 던집니다.
-     */
+    @Transactional // 메서드에 트랜잭션 처리를 적용합니다.
     public Long updateMemo(Long id, MemoRequestDto requestDto) {
-        // 업데이트할 Memo가 데이터베이스에 존재하는지 확인합니다.
-        Memo memo = memoRepository.findById(id);
-        if (memo != null) {
-            // Memo 엔티티의 내용을 업데이트합니다.
-            memoRepository.update(id, requestDto);
+        // 해당 메모가 DB에 존재하는지 확인하고 존재하지 않으면 예외를 던집니다.
+        Memo memo = findMemo(id);
 
-            return id; // 업데이트된 Memo의 ID를 반환합니다.
-        } else {
-            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-        }
+        // memo 내용 수정
+        memo.update(requestDto); // Memo 엔티티의 내용을 업데이트합니다.
+
+        return id; // 업데이트된 Memo의 id를 반환합니다.
     }
 
-    /**
-     * 특정 Memo를 삭제하는 메서드입니다.
-     *
-     * @param id 삭제할 Memo의 ID
-     * @return 삭제된 Memo의 ID
-     * @throws IllegalArgumentException 해당 ID에 해당하는 Memo가 존재하지 않을 경우 예외를 던집니다.
-     */
     public Long deleteMemo(Long id) {
-        // 삭제할 Memo가 데이터베이스에 존재하는지 확인합니다.
-        Memo memo = memoRepository.findById(id);
-        if (memo != null) {
-            // Memo를 삭제합니다.
-            memoRepository.delete(id);
+        // 해당 메모가 DB에 존재하는지 확인하고 존재하지 않으면 예외를 던집니다.
+        Memo memo = findMemo(id);
 
-            return id; // 삭제된 Memo의 ID를 반환합니다.
-        } else {
-            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-        }
+        // memo 삭제
+        memoRepository.delete(memo); // Memo 엔티티를 삭제합니다.
+
+        return id; // 삭제된 Memo의 id를 반환합니다.
+    }
+
+    private Memo findMemo(Long id) {
+        // 주어진 id로 Memo 엔티티를 찾아 반환하며, Memo 엔티티가 존재하지 않으면 예외를 던집니다.
+        return memoRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("선택한 메모는 존재하지 않습니다.")
+        );
     }
 }
