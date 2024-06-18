@@ -25,4 +25,9 @@ public class Memo {
         // MemoRequestDto로부터 메모 내용을 가져와서 설정
         this.contents = requestDto.getContents();
     }
+
+    public void update(MemoRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.contents = requestDto.getContents();
+    }
 }
