@@ -23,4 +23,11 @@ public class MemoResponseDto {
         // Memo 엔티티로부터 메모 내용을 가져와서 설정
         this.contents = memo.getContents();
     }
+
+    public MemoResponseDto(Long id, String username, String contents) {
+        this.id = id;
+        this.username = username;
+        this.contents = contents;
+
+    }
 }
