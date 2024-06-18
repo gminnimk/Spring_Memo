@@ -16,36 +16,36 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionTest {
 
     @PersistenceContext
-    EntityManager em;
+    EntityManager em; // EntityManager 주입
 
     @Autowired
-    MemoRepository memoRepository;
+    MemoRepository memoRepository; // MemoRepository 주입
 
     @Test
-    @Transactional
-    @Rollback(value = false) // 테스트 코드에서 @Transactional 를 사용하면 테스트가 완료된 후 롤백하기 때문에 false 옵션 추가
+    @Transactional // 트랜잭션 설정
+    @Rollback(value = false) // 테스트 완료 후 롤백 여부 설정 (false로 설정하면 롤백하지 않음)
     @DisplayName("메모 생성 성공")
     void test1() {
         Memo memo = new Memo();
         memo.setUsername("Robbert");
         memo.setContents("@Transactional 테스트 중!");
 
-        em.persist(memo);  // 영속성 컨텍스트에 메모 Entity 객체를 저장합니다.
+        em.persist(memo); // 영속성 컨텍스트에 Memo 엔티티 객체 저장
     }
 
     @Test
-    @Disabled
+    @Disabled // 이 테스트는 비활성화 상태로 설정
     @DisplayName("메모 생성 실패")
     void test2() {
         Memo memo = new Memo();
         memo.setUsername("Robbie");
         memo.setContents("@Transactional 테스트 중!");
 
-        em.persist(memo);  // 영속성 컨텍스트에 메모 Entity 객체를 저장합니다.
+        em.persist(memo); // 영속성 컨텍스트에 Memo 엔티티 객체 저장
     }
 
     @Test
-    @Disabled
+    @Disabled // 이 테스트는 비활성화 상태로 설정
 //    @Transactional
 //    @Rollback(value = false)
     @DisplayName("트랜잭션 전파 테스트")
