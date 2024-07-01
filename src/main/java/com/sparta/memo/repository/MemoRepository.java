@@ -10,4 +10,11 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
 
     // modifiedAt 필드를 기준으로 내림차순으로 모든 Memo 엔티티를 조회하는 메서드
     List<Memo> findAllByOrderByModifiedAtDesc();
+
+    // 키워드를 포함하는 내용(Contents)을 가진 모든 Memo 엔티티를 수정 시간(ModifiedAt) 내림차순으로 조회합니다.
+    // 반환되는 리스트는 키워드를 포함하는 Memo 엔티티의 리스트입니다.
+    List<Memo> findAllByContentsContainsOrderByModifiedAtDesc(String keyword);
+
+
+
 }

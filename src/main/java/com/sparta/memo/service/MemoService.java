@@ -31,11 +31,26 @@ public class MemoService {
         return memoResponseDto; // 생성된 MemoResponseDto 객체를 반환합니다.
     }
 
+
     public List<MemoResponseDto> getMemos() {
-        // DB 조회
-        // Memo 엔티티의 모든 데이터를 조회하고, 각 Memo 엔티티를 MemoResponseDto로 변환한 후 리스트로 반환합니다.
-        return memoRepository.findAll().stream().map(MemoResponseDto::new).toList();
+        // DB에서 Memo 엔티티의 모든 데이터를 ModifiedAt 내림차순으로 조회
+        // 각 Memo 엔티티를 MemoResponseDto로 변환한 후 리스트로 반환
+        return memoRepository.findAllByOrderByModifiedAtDesc().stream()
+                .map(MemoResponseDto::new)
+                .toList();
     }
+
+
+    // 주어진 키워드를 포함하는 Memo 엔티티들을 DB에서 조회합니다.
+    // 조회된 Memo 엔티티들을 수정 시간(ModifiedAt) 내림차순으로 정렬합니다.
+    // 각 Memo 엔티티를 MemoResponseDto로 변환하고, 변환된 MemoResponseDto 객체들을 리스트로 반환합니다.
+    public List<MemoResponseDto> getMemosByKeyword(String keyword) {
+        return memoRepository.findAllByContentsContainsOrderByModifiedAtDesc(keyword)
+                .stream() // 조회된 Memo 엔티티 리스트를 스트림으로 변환합니다.
+                .map(MemoResponseDto::new) // 각 Memo 엔티티를 MemoResponseDto로 변환합니다.
+                .toList(); // 변환된 MemoResponseDto 객체들을 리스트로 수집합니다.
+    }
+
 
     @Transactional // 메서드에 트랜잭션 처리를 적용합니다.
     public Long updateMemo(Long id, MemoRequestDto requestDto) {
@@ -64,4 +79,5 @@ public class MemoService {
                 new IllegalArgumentException("선택한 메모는 존재하지 않습니다.")
         );
     }
+
 }
