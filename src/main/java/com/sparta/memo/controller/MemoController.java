@@ -64,11 +64,15 @@ public class MemoController {
     - Spring Data JPA DOCS를 사용하여 방법을 찾습니다.
      */
 
+
+
+    // GET 요청 처리: "/memos/contents" 엔드포인트에 대한 요청을 처리합니다.
+    // 요청 파라미터로 전달된 키워드를 사용하여 메모를 조회합니다.
+    // MemoService의 getMemosByKeyword 메서드를 호출하여 키워드에 해당하는 MemoResponseDto 리스트를 반환합니다.
     @GetMapping("/memos/contents")
     public List<MemoResponseDto> getMemosByKeyword(String keyword){
-        // GET 요청 처리: "/memos/contents" 엔드포인트에 대한 요청을 처리합니다.
-        // 요청 파라미터로 전달된 키워드를 사용하여 메모를 조회합니다.
-        // MemoService의 getMemosByKeyword 메서드를 호출하여 키워드에 해당하는 MemoResponseDto 리스트를 반환합니다.
+
+        // memoService에서 getMemosByKeyword 메서드를 가져와서 keyword를 호출
         return memoService.getMemosByKeyword(keyword);
     }
 
