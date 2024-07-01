@@ -2,9 +2,7 @@ package com.sparta.memo.controller;
 
 import com.sparta.memo.dto.MemoRequestDto;
 import com.sparta.memo.dto.MemoResponseDto;
-import com.sparta.memo.entity.Memo;
 import com.sparta.memo.service.MemoService;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,12 +65,13 @@ public class MemoController {
 
 
     // GET 요청 처리: "/memos/contents" 엔드포인트에 대한 요청을 처리합니다.
-    // 요청 파라미터로 전달된 키워드를 사용하여 메모를 조회합니다.
+    // 요청 파라미터로 전달된 키워드를 사용하여 메모를 조회합니다. (여러개 가져오므로 List 사용)
     // MemoService의 getMemosByKeyword 메서드를 호출하여 키워드에 해당하는 MemoResponseDto 리스트를 반환합니다.
+    // @Request Param 방식 즉, 쿼리 스트링 방식은 생략이 가능하므로 String keyword로 작성한 것
     @GetMapping("/memos/contents")
     public List<MemoResponseDto> getMemosByKeyword(String keyword){
 
-        // memoService에서 getMemosByKeyword 메서드를 가져와서 keyword를 호출
+        // memoService에서 getMemosByKeyword 메서드를 가져와서 keyword를 넘겨줘야 함.
         return memoService.getMemosByKeyword(keyword);
     }
 
