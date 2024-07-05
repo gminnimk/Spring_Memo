@@ -1,5 +1,7 @@
 package com.sparta.memo.repository;
 
+// Memo Entity를 가지고 저장할 수 있게 기능을 가져다 주는 클래스.
+
 import com.sparta.memo.entity.Memo; // Memo 엔티티를 import
 import org.springframework.data.jpa.repository.JpaRepository; // Spring Data JPA의 JpaRepository를 import
 

@@ -1,5 +1,10 @@
 package com.sparta.memo.service;
 
+
+// 실제로 우리가 저장할 수 있게 도와주는 로직
+
+
+
 import com.sparta.memo.dto.MemoRequestDto; // MemoRequestDto를 import
 import com.sparta.memo.dto.MemoResponseDto; // MemoResponseDto를 import
 import com.sparta.memo.entity.Memo; // Memo 엔티티를 import
